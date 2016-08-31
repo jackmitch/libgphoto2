@@ -2664,39 +2664,39 @@ enable_liveview:
 					continue;
 				}
 				/* look for the JPEG SOI marker (0xFFD8) in data */
-				jpgStartPtr = (unsigned char*)memchr(data, 0xff, size);
-				while(jpgStartPtr && ((jpgStartPtr+1) < (data + size))) {
-					if(*(jpgStartPtr + 1) == 0xd8) { /* SOI found */
-						break;
-					} else { /* go on looking (starting at next byte) */
-						jpgStartPtr++;
-						jpgStartPtr = (unsigned char*)memchr(jpgStartPtr, 0xff, data + size - jpgStartPtr);
-					}
-				}
-				if(!jpgStartPtr) { /* no SOI -> no JPEG */
-					gp_context_error (context, _("Sorry, your Nikon camera does not seem to return a JPEG image in LiveView mode"));
-					return GP_ERROR;
-				}
+				// jpgStartPtr = (unsigned char*)memchr(data, 0xff, size);
+				// while(jpgStartPtr && ((jpgStartPtr+1) < (data + size))) {
+				// 	if(*(jpgStartPtr + 1) == 0xd8) { /* SOI found */
+				// 		break;
+				// 	} else { /* go on looking (starting at next byte) */
+				// 		jpgStartPtr++;
+				// 		jpgStartPtr = (unsigned char*)memchr(jpgStartPtr, 0xff, data + size - jpgStartPtr);
+				// 	}
+				// }
+				// if(!jpgStartPtr) { /* no SOI -> no JPEG */
+				// 	gp_context_error (context, _("Sorry, your Nikon camera does not seem to return a JPEG image in LiveView mode"));
+				// 	return GP_ERROR;
+				// }
 				/* if SOI found, start looking for EOI marker (0xFFD9) one byte after SOI
 				   (just to be sure we will not go beyond the end of the data array) */
-				jpgEndPtr = (unsigned char*)memchr(jpgStartPtr+1, 0xff, data+size-jpgStartPtr-1);
-				while(jpgEndPtr && ((jpgEndPtr+1) < (data + size))) {
-					if(*(jpgEndPtr + 1) == 0xd9) { /* EOI found */
-						jpgEndPtr += 2;
-						break;
-					} else { /* go on looking (starting at next byte) */
-						jpgEndPtr++;
-						jpgEndPtr = (unsigned char*)memchr(jpgEndPtr, 0xff, data + size - jpgEndPtr);
-					}
-				}
-				if(!jpgEndPtr) { /* no EOI -> no JPEG */
-					gp_context_error (context, _("Sorry, your Nikon camera does not seem to return a JPEG image in LiveView mode"));
-					return GP_ERROR;
-				}
+				// jpgEndPtr = (unsigned char*)memchr(jpgStartPtr+1, 0xff, data+size-jpgStartPtr-1);
+				// while(jpgEndPtr && ((jpgEndPtr+1) < (data + size))) {
+				// 	if(*(jpgEndPtr + 1) == 0xd9) { /* EOI found */
+				// 		jpgEndPtr += 2;
+				// 		break;
+				// 	} else { /* go on looking (starting at next byte) */
+				// 		jpgEndPtr++;
+				// 		jpgEndPtr = (unsigned char*)memchr(jpgEndPtr, 0xff, data + size - jpgEndPtr);
+				// 	}
+				// }
+				// if(!jpgEndPtr) { /* no EOI -> no JPEG */
+				// 	gp_context_error (context, _("Sorry, your Nikon camera does not seem to return a JPEG image in LiveView mode"));
+				// 	return GP_ERROR;
+				// }
 
 				// changed by ryan, append the file with the header info, so we can
 				// extract the header info.
-				gp_file_append (file, (char*)data, jpgEndPtr-jpgStartPtr);
+				gp_file_append (file, (char*)data, size);//jpgEndPtr-jpgStartPtr);
 
 				// gp_file_append (file, (char*)jpgStartPtr, jpgEndPtr-jpgStartPtr);
 				free (data); /* FIXME: perhaps handle the 128 byte header data too. */
